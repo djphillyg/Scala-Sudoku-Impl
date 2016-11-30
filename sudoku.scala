@@ -23,6 +23,12 @@ object Puzzle extends App{
 
   //read the sudoku puzzle values in from the text file
   val filename = readLine("Sudoku puzzle file name: ")
+  try {
+    val sourceFile = Source.fromFile(filename)
+  } catch {
+    case e: java.io.FileNotFoundException => println("File not found")
+    System.exit(0)
+  }
   val linesFromText=Source.fromFile(filename).getLines().toArray
   var row=0
   for(lines<-linesFromText){
