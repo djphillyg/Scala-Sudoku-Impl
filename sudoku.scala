@@ -13,7 +13,6 @@
 import scala.io.Source
 
 object Puzzle extends App{
-  println("Hello World!")
 
   //define the dimensions of the board
   val MAX_ROW=9
@@ -24,7 +23,7 @@ object Puzzle extends App{
 
   //read the sudoku puzzle values in from the text file
   val filename = readLine("Sudoku puzzle file name: ")
-  val linesFromText=Source.fromFile("sudoku.txt").getLines().toArray
+  val linesFromText=Source.fromFile(filename).getLines().toArray
   var row=0
   for(lines<-linesFromText){
     val arr=lines.split(" ").map(x=>x.toInt)
@@ -33,14 +32,18 @@ object Puzzle extends App{
     }
     row+=1
   }
+  
+  print("Board entered:\n")
+  printBoard()
 
   //call the recursive backtracking solver
-  val isSolved = solver(0,0)
+  var isSolved = solver(0,0)
   //print the results of the solver method, depending
   //on whether or not the puzzle was solved
-  if(isSolved) {
+  if(isSolved){
+    print("Solution:\n")
     printBoard()
-  } else {
+  } else{
     print("No solution to this puzzle\n")
   }
 
@@ -137,8 +140,8 @@ object Puzzle extends App{
     //and call solver on next cell if it does
     if(Grid(row)(col)!=0)
     {
-      if(solver(row,col+1))
-      return true
+      //if(solver(row,col+1)) return true
+      return solver(row, col+1)
     }
 
     //try assigning a number to the cell and check if 
@@ -146,13 +149,14 @@ object Puzzle extends App{
     for(i<-1 until 10)
     {
       if(isValid(row,col,i)) {
-        Grid(row)(col)=i
+        Grid(row)(col) = i
         if(solver(row,col+1)) return true
         Grid(row)(col)=0
       }
     }
-
-    //backtrack
+    
+    //no value was safe for this cell, so backtrack
+    Grid(row)(col) = 0
     return false
   }
   
@@ -160,7 +164,6 @@ object Puzzle extends App{
    * this method prints the sudoku puzzle to the user
    */
   private def printBoard() {
-    print("Solution:\n")
     var i =5
     for(row<- 0 until 9){
       for(col<- 0 until 9){
